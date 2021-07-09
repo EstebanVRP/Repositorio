@@ -1,0 +1,72 @@
+---
+title: "Ensayos RMD - GPC"
+output: html_document
+---
+
+#Set directory - EVRP
+```{r}
+setwd("F:/Esteban/Desktop/EVRP - General/ESTADISTICA/API_MEF-main/API_MEF-main")
+```
+
+#Abrir conección con data del MEF. No es necesario instalar el paquete porque ya estamos conectados
+
+```{r}
+install.packages("devtools")
+devtools::install_github("FvD/junr")
+```
+
+```{r}
+library(junr)
+base_url <- "http://api.datosabiertos.mef.gob.pe/api/v2/datastreams/"
+api_key <- "YMFDoejUPoFPLhOCQNzPzDvKLhk1lPufqhoFuvfW"
+
+```
+
+#Para abrir el índice
+
+```{r}
+get_index(base_url, api_key)
+```
+#Para revisar la lista de base de datos, según el nombre con el cual llamarlos. 
+
+```{r}
+list <- list_guid(base_url, api_key)
+list[1:5000]
+```
+
+#Para revisar la lista de base de datos, según el título. 
+
+```{r}
+list_titles <- list_titles(base_url, api_key)
+list_titles[1:5000]
+```
+
+#Aquí voy a sacar del ejecución del gasto de Arequipa
+
+```{r}
+
+guid_datos <- "EJECU-DEL-INGRE-DE-91200"
+datos_AREQUIPA <- get_data(base_url, api_key, guid_datos)
+View(datos_AREQUIPA)
+```
+
+#Si quisiera descargar esta base de datos en excel, escribo
+
+```{r}
+write.csv(datos_AREQUIPA, file="datos_AREQUIPA.csv")
+```
+
+#Para explorar los datos de la BD
+```{r}
+colnames(datos_AREQUIPA) #Nombres de las columnas
+
+datos_AREQUIPA$PROVINCIA #con este comando me bota todos los datos de la columna
+
+summary(datos_AREQUIPA) #Resumen de las variables
+
+head(datos_AREQUIPA) #El encabezado de la base de datos
+
+str(datos_AREQUIPA) #Análisis de la BD
+
+```
+

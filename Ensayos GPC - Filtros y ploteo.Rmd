@@ -1,0 +1,118 @@
+---
+title: "Ensayos GPC - Filtros y ploteo"
+output: html_document
+---
+
+#Instalar el paquete tidyverse
+```{r}
+install.packages("tidyverse")
+install.packages("gapminder")
+```
+
+#activamos dplyr y gapminder
+```{r}
+library(gapminder)
+library(dplyr)
+```
+
+#Abrimos la BD
+
+```{r}
+datos_AREQUIPA <- read.csv("datos_AREQUIPA.CSV")
+View(datos_AREQUIPA)
+
+#Tambien podemos usar esta función glimpse para ver la data
+glimpse(datos_AREQUIPA)
+```
+
+#Transformar datos como MONTO_PIM en vectores numericos
+```{r}
+PIM_numeric <- as.numeric(as.character(datos_AREQUIPA$MONTO_PIM))
+
+```
+
+#Jugando con los datos
+
+```{r}
+
+aggregate(PIM_numeric ~ PROVINCIA, data = datos_AREQUIPA, FUN = mean)
+
+```
+
+
+
+#jugando con los datos
+```{r}
+prueba1 <- datos_AREQUIPA%>%
+  group_by(PROVINCIA)%>%
+  summarise(sumPIM=sum(MONTO_PIM), meanPIM=mean(MONTO_PIM))
+  
+```
+
+
+
+#Empezamos con primeras pruebas trabajando con la BD datos_AREQUIPa
+
+```{r}
+datos_AREQUIPA %>% #con esto llamas a la BD
+  summarize(MONTO_PIM, meanMONTOPIM = mean(PIM_numeric))
+ 
+```
+
+```{r}
+
+ESPECIFICA_NOMBRE2 <- as.character(datos_AREQUIPA$ESPECIFICA_NOMBRE)
+
+ESPECIFICA_NOMBRE2$PIM_numeric
+
+```
+
+#Aplicamos filtros
+
+```{r}
+#mismo ejemplo pero agrupado por provincias
+datos_AREQUIPA %>%
+  group_by(PROVINCIA == "LA UNION", ESPECIFICA_NOMBRE2) %>%
+  summarize(ESPECIFICA_NOMBRE2, MONTO_PIM, sumESPECIFICA = sum(PIM_numeric))
+```
+
+#Ahora vamos a graficar
+
+```{r}
+library(ggplot2)
+
+ggplot(prueba1, aes(x = PROVINCIA, y = sumPIM)) + 
+      geom_bar(stat = "identity")
+
+```
+
+
+#jugando con los datos 2
+```{r}
+
+prueba2 <- datos_AREQUIPA%>%
+  filter(PROVINCIA == "LA UNION") %>%
+  group_by(RUBRO_NOMBRE)%>%
+  summarise(sumPIM=sum(MONTO_PIM), meanPIM=mean(MONTO_PIM))
+  ggplot(prueba2, aes(x = RUBRO_NOMBRE, y = sumPIM)) + 
+      geom_bar(stat = "identity", width=0.8) +
+      coord_flip()
+ 
+```
+
+#Probamos otro ggplot
+
+
+```{r}
+  ggplot(data = datos_AREQUIPA, aes(x = PROVINCIA, y = PIM_numeric, color = PROVINCIA)) +
+    geom_boxplot() +
+    theme_bw()
+
+```
+
+
+
+
+
+
+
